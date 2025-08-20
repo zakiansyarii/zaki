@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAKI ANSYARI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <!-- Particles Background -->
+    <div id="particles-js" class="particles"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-black bg-opacity-70 backdrop-blur-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-white">
+                <span class="text-yellow-500">ZAKI ANSYARI</span>
+            </div>
+            <div class="hidden md:flex space-x-8" id="navbar-links">
+                <a href="#home" class="nav-link text-white hover:text-yellow-500 transition">Home</a>
+                <a href="#gallery" class="nav-link text-white hover:text-yellow-500 transition">Gallery</a>
+                <a href="#skills" class="nav-link text-white hover:text-yellow-500 transition">Songs</a>
+                <a href="#contact" class="nav-link text-white hover:text-yellow-500 transition">Contact</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-nav" class="md:hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center space-y-8 hidden transition-all duration-300">
+            <a href="#home" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Home</a>
+            <a href="#gallery" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Gallery</a>
+            <a href="#skills" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Skills</a>
+            <a href="#contact" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Contact</a>
+        </div>
+    </nav>
+    
+    <!-- Home Section -->
+    <section id="home" class="section flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 hero-text">
+                    <h1 class="text-5xl md:text-6xl font-bold mb-6">Hi, I'm <span class="text-yellow-500">ZAKI</span></h1>
+                    <p class="text-xl mb-8 text-gray-300">Hari terbesar dalam hidup Anda dan saya adalah ketika kita bertanggung jawab penuh atas sikap kita.</p>
+                    <div class="flex space-x-4">
+                        <a href="#contact" class="btn-primary rounded-full">Hire Me</a>
+                        <a href="#gallery" class="px-6 py-3 border border-yellow-500 text-yellow-500 rounded-full hover:bg-yellow-500 hover:text-black transition">GALERY</a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 mt-10 md:mt-0 flex justify-center">
+                    <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-yellow-500">
+                        <img src="./img/profile.jpeg" alt="Professional portrait of [Your Name] wearing formal attire with a clean background" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Gallery Section -->
+    <section id="gallery" class="section bg-gradient-to-br from-gray-900 to-black py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16 text-yellow-500">My Gallery</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Gallery Item 1 -->
+                <div class="gallery-item">
+                    <img src="./img/1.jpeg" alt="Web design project showing a modern e-commerce dashboard with analytics" />
+                    <div class="absolute bottom-0 left-0 p-6 text-white z-10 opacity-0 transition-opacity duration-300 hover:opacity-100">
+                        <h3 class="text-xl font-bold">E-Commerce Dashboard</h3>
+                        <p>Modern analytics interface for online stores</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 2 -->
+                <div class="gallery-item">
+                    <img src="./img/2.jpeg" alt="Mobile app design with clean UI and user friendly interface on smartphone mockup" />
+                    <div class="absolute bottom-0 left-0 p-6 text-white z-10 opacity-0 transition-opacity duration-300 hover:opacity-100">
+                        <h3 class="text-xl font-bold">Mobile App Design</h3>
+                        <p>User-friendly interface for productivity app</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 3 -->
+                <div class="gallery-item">
+                    <img src="./img/3.jpeg" alt="Brand identity design including logo, business cards and brand guidelines" />
+                    <div class="absolute bottom-0 left-0 p-6 text-white z-10 opacity-0 transition-opacity duration-300 hover:opacity-100">
+                        <h3 class="text-xl font-bold">Brand Identity</h3>
+                        <p>Complete branding package for startup</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 4 -->
+                <div class="gallery-item">
+                    <img src="./img/4.jpeg" />
+                    <div class="absolute bottom-0 left-0 p-6 text-white z-10 opacity-0 transition-opacity duration-300 hover:opacity-100">
+                        <h3 class="text-xl font-bold">Code Development</h3>
+                        <p>Clean and efficient code architecture</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 5 -->
+                <div class="gallery-item">
+                    <img src="./img/5.jpeg" alt="UX/UI research process with user journey maps and wireframes" />
+                    <div class="absolute bottom-0 left-0 p-6 text-white z-10 opacity-0 transition-opacity duration-300 hover:opacity-100">
+                        <h3 class="text-xl font-bold">UX Research</h3>
+                        <p>Comprehensive user experience analysis</p>
+                    </div>
+                </div>
+                
+                <!-- Gallery Item 6 -->
+                <div class="gallery-item">
+                    <img src="./img/6.jpeg" alt="Corporate website design with responsive layout on multiple devices" />
+                    <div class="absolute bottom-0 left-0 p-6 text-white z-10 opacity-0 transition-opacity duration-300 hover:opacity-100">
+                        <h3 class="text-xl font-bold">Responsive Design</h3>
+                        <p>Adaptive layouts for all devices</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lightbox -->
+        <div id="lightbox" class="lightbox">
+            <span class="close-lightbox">&times;</span>
+            <div class="lightbox-content">
+                <img id="lightbox-image" src="" alt="">
+            </div>
+        </div>
+    </section>
+    
+    <!-- Skills Section -->
+    <section id="skills" class="section bg-gradient-to-br from-black via-gray-900 to-gray-800 py-20">
+        <div class="container mx-auto px-6 flex flex-col items-center justify-center">
+            <h2 class="text-4xl font-bold text-center mb-10 text-yellow-500">SONGS ♫</h2>
+            <div class="w-full max-w-xl bg-gray-900 bg-opacity-70 rounded-xl shadow-lg p-6 flex flex-col items-center">
+                <p class="text-gray-300 mb-6 text-center text-lg">Tidak perlu memiliki kemampuan atau kekuatan super untuk merasakan cinta. Yang dibutuhkan hanyalah menjadi diri sendiri.</p>
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/6RUKPb4LETWmmr3iAEQktW?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <span class="mt-4 text-yellow-500 font-semibold">The Chainsmokers & Coldplay - Something Just Like This</span>
+            </div>
+        </div>
+        <!-- Tombol CLOUD di atas Contact -->
+    <div class="flex justify-center mb-8">
+        <button id="cloudBtn" class="flex items-center px-6 py-3 bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-400 text-black font-bold rounded-full shadow-lg hover:scale-105 hover:bg-yellow-600 transition-all duration-300">
+            <!-- Logo Cloud SVG -->
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 0 1 4-4h1a5 5 0 0 1 9.9 1.5A3.5 3.5 0 0 1 17.5 20h-11A3.5 3.5 0 0 1 3 15z"/>
+            </svg>
+            CLOUD
+        </button>
+    </div>
+    </section>
+    
+    
+
+    <!-- Contact Section -->
+    <section id="contact" class="section bg-gradient-to-br from-gray-900 to-black py-20">
+        <div class="container mx-auto px-6 flex justify-center">
+            <form action="https://formspree.io/f/xyzpvelw" method="POST" class="bg-gray-900 bg-opacity-80 rounded-2xl shadow-xl p-8 w-full max-w-md space-y-6">
+                <h2 class="text-2xl font-bold text-yellow-500 mb-4 text-center">Hubungi Saya</h2>
+                <div>
+                    <label for="name" class="block text-gray-300 mb-2 font-semibold">Nama</label>
+                    <input type="text" id="name" name="name" required class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                </div>
+                <div>
+                    <label for="email" class="block text-gray-300 mb-2 font-semibold">Email</label>
+                    <input type="email" id="email" name="email" required class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                </div>
+                <div>
+                    <label for="message" class="block text-gray-300 mb-2 font-semibold">Pesan</label>
+                    <textarea id="message" name="message" rows="4" required class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"></textarea>
+                </div>
+                <button type="submit" class="w-full py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition">Send</button>
+            </form>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-black py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">© 2025 zaki ansyari.</p>
+        </div>
+    </footer>
+    
+    <!-- Modal Login -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-900 rounded-xl p-8 shadow-xl w-full max-w-sm">
+            <h2 class="text-2xl font-bold text-yellow-500 mb-4 text-center">Login Cloud</h2>
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label for="username" class="block text-left text-gray-300 mb-2 font-semibold">Username</label>
+                    <input type="text" id="username" placeholder="Masukkan username" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500" required>
+                </div>
+                <div>
+                    <label for="password" class="block text-left text-gray-300 mb-2 font-semibold">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" placeholder="Masukkan password" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500" required>
+                        <button type="button" id="togglePassword" class="absolute right-3 top-2 text-gray-400 hover:text-yellow-500 focus:outline-none">👁️</button>
+                    </div>
+                </div>
+                <button type="submit" id="loginBtn" class="w-full py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition">Login</button>
+            </form>
+            <p id="loginError" class="text-red-500 mt-2 text-center hidden">Username atau Password salah!</p>
+            <button id="closeLoginModal" class="mt-4 w-full py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition">Batal</button>
+        </div>
+    </div>
+
+    <script>
+        // Tombol CLOUD
+        const cloudBtn = document.getElementById('cloudBtn');
+        const loginModal = document.getElementById('login-modal');
+        const closeLoginModal = document.getElementById('closeLoginModal');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const loginBtn = document.getElementById('loginBtn');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        let attempts = 0;
+        const maxAttempts = 3;
+
+        cloudBtn.addEventListener('click', function() {
+            loginModal.classList.remove('hidden');
+            loginError.classList.add('hidden');
+            loginBtn.disabled = false;
+            loginBtn.textContent = "Login";
+            loginBtn.classList.remove("bg-gray-500");
+            attempts = 0;
+            loginForm.reset();
+        });
+
+        closeLoginModal.onclick = () => {
+            loginModal.classList.add('hidden');
+        };
+
+        togglePassword.onclick = () => {
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                togglePassword.textContent = "🙈";
+            } else {
+                passwordInput.type = "password";
+                togglePassword.textContent = "👁️";
+            }
+        };
+
+        loginForm.onsubmit = function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = passwordInput.value;
+            if(username === 'zakiansyari' && password === 'zaki1234'){
+                window.location.href = './rahasia.html';
+            } else {
+                attempts++;
+                loginError.classList.remove('hidden');
+                if(attempts >= maxAttempts){
+                    loginBtn.disabled = true;
+                    loginBtn.textContent = "Terlalu banyak percobaan!";
+                    loginBtn.classList.add("bg-gray-500");
+                }
+            }
+        };
+    </script>
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="./js/script.js"></script>
+</body>
+</html>
+
