@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Rahasia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: radial-gradient(ellipse at center, #232526 0%, #000 100%);
+        }
+        .glow {
+            box-shadow: 0 0 30px 10px #facc15, 0 0 10px 2px #fff inset;
+        }
+        .mystery {
+            letter-spacing: 0.2em;
+            text-shadow: 0 0 10px #facc15, 0 0 20px #fff;
+        }
+        .fog {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            background: url('https://i.ibb.co/6bYw7Qp/fog.png') repeat;
+            opacity: 0.15;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="relative flex items-center justify-center min-h-screen overflow-hidden">
+    <div class="fog"></div>
+    <div class="relative z-10 bg-gray-900 bg-opacity-80 rounded-2xl shadow-2xl p-10 text-center border border-yellow-500 glow">
+        <h1 class="text-5xl font-extrabold text-yellow-500 mb-6 mystery">cloud zaki</h1>
+        <p class="text-gray-300 mb-8 text-lg italic">selamat datang<br>cloud zaki</p>
+        <a href="https://drive.google.com/drive/folders/16OKHpvVyXizMHRE5Fh1hQDAh3_Pux6x7?usp=sharing" target="_blank"
+           class="px-10 py-4 bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-400 text-black font-bold rounded-full shadow-xl hover:scale-105 hover:bg-yellow-600 transition-all duration-300 glow tracking-widest">
+            buka cloud
+        </a>
+    </div>
+</body>
+</html>
