@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Snake — Minimal Touch</title>
+  <style>
+    :root{
+      --bg:#0B0F19;
+      --panel:#141A2A;
+      --accent:#43D9A3;
+      --food:#E94560;
+      --text:#E6EDF3;
+      --muted:#8A93A6;
+      --radius:20px;
+    }
+    body.light{
+      --bg:#F6F8FA;
+      --panel:#E6EDF3;
+      --accent:#43D9A3;
+      --food:#E94560;
+      --text:#141A2A;
+      --muted:#8A93A6;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--text); font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial; display:flex; align-items:center; justify-content:center; overflow:hidden;
+    }
+    .shell{
+      width:min(96vw,560px); height:min(96vh,900px); display:flex; flex-direction:column; gap:12px; padding:16px; background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0)); border-radius:var(--radius);
+    }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; background:var(--panel); border-radius:16px; padding:10px 14px; box-shadow:0 6px 18px rgba(0,0,0,.25);
+    }
+    .brand{font-weight:700; letter-spacing:.3px}
+    .stats{display:flex; gap:12px; font-weight:600}
+    .badge{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); padding:6px 10px; border-radius:12px}
+    .btn{appearance:none; border:none; background:var(--accent); color:#062317; font-weight:700; padding:12px 16px; border-radius:14px; cursor:pointer; box-shadow:0 8px 18px rgba(67,217,163,.25);}
+    .theme-btn{margin-left:10px;}
+    .stage{
+      position:relative; flex:1; background:var(--panel); border-radius:18px; display:flex; align-items:center; justify-content:center; overflow:hidden; box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+    }
+    canvas{width:100%; height:100%; display:block; touch-action:none;}
+    .overlay{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; background:linear-gradient(180deg,rgba(11,15,25,.25),rgba(11,15,25,.55)); backdrop-filter:blur(3px); text-align:center; padding:20px; }
+    .overlay h1{margin:0; font-size:28px}
+    .overlay p{margin:0; color:var(--muted)}
+    .row{display:flex; gap:10px;}
+    .controls{ display:grid; grid-template-columns:64px 64px 64px; grid-template-rows:64px 64px 64px; gap:10px; align-self:center; margin-top:10px; }
+    .ctrl{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:22px; user-select:none; -webkit-tap-highlight-color:transparent; }
+    .ctrl:active{ transform:scale(.98); }
+    .ctrl-label{ color:var(--muted); font-size:12px; margin-top:4px; text-align:center }
+    .controls > div{ width:64px; height:64px }
+    .up{ grid-column:2; grid-row:1 }
+    .left{ grid-column:1; grid-row:2 }
+    .right{ grid-column:3; grid-row:2 }
+    .down{ grid-column:2; grid-row:3 }
+    @media (max-height:700px){
+      .controls{ transform:scale(.9) }
+    }
+    .speed-label{color:var(--muted);font-size:15px;}
+    .speed-slider{width:120px;}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">SNAKE ZAKI</div>
+      <div class="stats">
+        <div class="badge">Score: <span id="score">0</span></div>
+        <div class="badge">Best: <span id="best">0</span></div>
+        <button class="btn theme-btn" id="themeBtn">🌙/☀️</button>
+      </div>
+    </div>
+    <div class="stage" id="stage">
+      <canvas id="game" aria-label="Snake game canvas" role="img"></canvas>
+      <div class="overlay" id="overlay">
+        <h1 id="title">Tap to Start</h1>
+        <p>Swipe / tombol panah untuk bergerak. Tap untuk pause.</p>
+        <label class="speed-label">
+          Kecepatan: <input type="range" id="speedSlider" min="70" max="300" value="150" step="10" class="speed-slider">
+        </label>
+        <div style="margin-top:10px;">
+          <label><input type="radio" name="mode" value="easy" checked> Mudah (tembus dinding)</label>
+          <label style="margin-left:15px;"><input type="radio" name="mode" value="hard"> Sulit (mati nabrak dinding)</label>
+        </div>
+        <div class="row"><button class="btn" id="startBtn">Mulai</button></div>
+      </div>
+    </div>
+    <div class="controls" aria-label="On-screen controls">
+      <div class="ctrl up" data-dir="up">▲</div>
+      <div class="ctrl left" data-dir="left">◀</div>
+      <div class="ctrl right" data-dir="right">▶</div>
+      <div class="ctrl down" data-dir="down">▼</div>
+    </div>
+    <div class="ctrl-label">Kompatibel HP: tombol & gesture swipe</div>
+  </div>
+  <audio id="eatSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b6c7b7b.mp3"></audio>
+<script>
+(() => {
+  const canvas = document.getElementById('game');
+  const stage = document.getElementById('stage');
+  const overlay = document.getElementById('overlay');
+  const titleEl = document.getElementById('title');
+  const startBtn = document.getElementById('startBtn');
+  const scoreEl = document.getElementById('score');
+  const bestEl  = document.getElementById('best');
+  const themeBtn = document.getElementById('themeBtn');
+  const speedSlider = document.getElementById('speedSlider');
+  const eatSound = document.getElementById('eatSound');
+  const DPR = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+
+  // Theme toggle
+  themeBtn.addEventListener('click', ()=>{
+    document.body.classList.toggle('light');
+    themeBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+    draw();
+  });
+
+  // Grid settings
+  const GRID = 24;
+  let tileSize = 20;
+  let ctx, W, H;
+  function resize() {
+    const rect = stage.getBoundingClientRect();
+    const size = Math.min(rect.width, rect.height);
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    canvas.width  = Math.floor(size * DPR);
+    canvas.height = Math.floor(size * DPR);
+    W = canvas.width; H = canvas.height;
+    tileSize = Math.floor(W / GRID);
+    ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    draw();
+  }
+  window.addEventListener('resize', resize, {passive:true});
+
+  // Game state
+  let snake = [];
+  let dir = {x:1, y:0};
+  let nextDir = {x:1, y:0};
+  let food = {x:10, y:10};
+  let running = false;
+  let paused = false;
+  let score = 0;
+  let best = Number(localStorage.getItem('snakeBest')||0);
+  bestEl.textContent = best;
+  let speedMs = Number(speedSlider.value);
+  let tickHandle = null;
+
+  speedSlider.addEventListener('input', ()=>{
+    speedMs = Number(speedSlider.value);
+  });
+
+  function newGame(){
+    const startX = Math.floor(GRID/2)-2;
+    const startY = Math.floor(GRID/2);
+    snake = [ {x:startX+2,y:startY}, {x:startX+1,y:startY}, {x:startX,y:startY} ];
+    dir = {x:1,y:0}; nextDir = {x:1,y:0};
+    score = 0; speedMs = Number(speedSlider.value); paused=false; running=true;
+    placeFood(); updateHUD(); hideOverlay(); loop();
+  }
+
+  function placeFood(){
+    let x,y,occupied;
+    do{
+      x = Math.floor(Math.random()*GRID);
+      y = Math.floor(Math.random()*GRID);
+      occupied = snake.some(s=>s.x===x && s.y===y);
+    }while(occupied);
+    food = {x,y};
+  }
+
+  function updateHUD(){
+    scoreEl.textContent = score;
+    bestEl.textContent = best;
+  }
+
+  function hideOverlay(){ overlay.style.display='none'; }
+  function showOverlay(msg){ titleEl.textContent = msg; overlay.style.display='flex'; }
+
+  function loop(){
+    if(!running) return;
+    clearTimeout(tickHandle);
+    tickHandle = setTimeout(()=>{
+      if(!paused){ step(); draw(); }
+      loop();
+    }, speedMs);
+  }
+
+  const modeRadios = document.getElementsByName('mode');
+  let mode = 'easy';
+
+  modeRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      mode = document.querySelector('input[name="mode"]:checked').value;
+    });
+  });
+
+  function step(){
+    dir = nextDir;
+    let head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+
+    // Mode mudah: tembus dinding
+    if (mode === 'easy') {
+      head.x = (head.x + GRID) % GRID;
+      head.y = (head.y + GRID) % GRID;
+    } else {
+      // Mode sulit: mati nabrak dinding
+      if (head.x < 0 || head.x >= GRID || head.y < 0 || head.y >= GRID) {
+        return gameOver();
+      }
+    }
+    if (snake.some(s => s.x === head.x && s.y === head.y)) {
+      return gameOver();
+    }
+
+    snake.unshift(head);
+    if (head.x === food.x && head.y === food.y){
+      score += 1;
+      if (score % 4 === 0 && speedMs > 70) speedMs -= 8;
+      best = Math.max(best, score);
+      localStorage.setItem('snakeBest', String(best));
+      placeFood();
+      updateHUD();
+      // Play sound
+      if (eatSound) { eatSound.currentTime = 0; eatSound.play(); }
+    } else {
+      snake.pop();
+    }
+  }
+
+  function roundedRect(x,y,w,h,r){
+    const rr = Math.min(r, w/2, h/2);
+    ctx.beginPath();
+    ctx.moveTo(x+rr, y);
+    ctx.arcTo(x+w, y, x+w, y+h, rr);
+    ctx.arcTo(x+w, y+h, x, y+h, rr);
+    ctx.arcTo(x, y+h, x, y, rr);
+    ctx.arcTo(x, y, x+w, y, rr);
+    ctx.closePath();
+  }
+
+  function drawGridBG(){
+    const s = tileSize; const a = 0.06; const b = 0.10;
+    for(let y=0;y<GRID;y++){
+      for(let x=0;x<GRID;x++){
+        const shade = ((x+y)%2===0? a : b);
+        ctx.fillStyle = `rgba(255,255,255,${shade})`;
+        ctx.fillRect(x*s, y*s, s, s);
+      }
+    }
+  }
+
+  function draw(){
+    if(!ctx) return;
+    ctx.save();
+    ctx.scale(DPR,DPR);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    drawGridBG();
+
+    const fSize = Math.floor(tileSize*0.9);
+    const fx = food.x*tileSize + (tileSize-fSize)/2;
+    const fy = food.y*tileSize + (tileSize-fSize)/2;
+    roundedRect(fx, fy, fSize, fSize, Math.floor(fSize*0.3));
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--food').trim();
+    ctx.fill();
+
+    const sSize = Math.floor(tileSize*0.92);
+    for(let i=snake.length-1;i>=0;i--){
+      const node = snake[i];
+      const x = node.x*tileSize + (tileSize-sSize)/2;
+      const y = node.y*tileSize + (tileSize-sSize)/2;
+      roundedRect(x, y, sSize, sSize, Math.floor(sSize*0.35));
+      ctx.fillStyle = i===0 ? '#43D9A3' : 'rgba(67,217,163,.85)';
+      ctx.fill();
+    }
+
+    ctx.restore();
+  }
+
+  function gameOver(){
+    running = false;
+    showOverlay(`Game Over — Skor ${score}`);
+    updateHUD();
+    // Vibrate on mobile
+    if (window.navigator.vibrate) window.navigator.vibrate([200, 100, 200]);
+  }
+
+  function setDirection(dirName){
+    const map = { up:{x:0,y:-1}, down:{x:0,y:1}, left:{x:-1,y:0}, right:{x:1,y:0} };
+    const nd = map[dirName];
+    if(!nd) return;
+    if (snake.length>1 && (nd.x === -dir.x && nd.y === -dir.y)) return;
+    nextDir = nd;
+  }
+
+  window.addEventListener('keydown', (e)=>{
+    const k = e.key;
+    if(['ArrowUp','w','W'].includes(k)) setDirection('up');
+    else if(['ArrowDown','s','S'].includes(k)) setDirection('down');
+    else if(['ArrowLeft','a','A'].includes(k)) setDirection('left');
+    else if(['ArrowRight','d','D'].includes(k)) setDirection('right');
+    else if(k===' '){ togglePause(); }
+  });
+
+  document.querySelectorAll('.ctrl').forEach(el=>{
+    el.addEventListener('touchstart', e=>{ e.preventDefault(); setDirection(el.dataset.dir); }, {passive:false});
+    el.addEventListener('click', ()=> setDirection(el.dataset.dir));
+  });
+
+  let touchStart = null;
+  canvas.addEventListener('touchstart', (e)=>{
+    if(e.touches.length>0) touchStart = {x:e.touches[0].clientX, y:e.touches[0].clientY, t:Date.now()};
+  }, {passive:true});
+
+  canvas.addEventListener('touchend', (e)=>{
+    if(!touchStart) return;
+    const dx = (e.changedTouches[0].clientX - touchStart.x);
+    const dy = (e.changedTouches[0].clientY - touchStart.y);
+    const adx = Math.abs(dx), ady = Math.abs(dy);
+    const dt = Date.now() - touchStart.t;
+    const threshold = 20;
+    if(Math.max(adx, ady) > threshold && dt < 500){
+      if(adx > ady) setDirection(dx>0? 'right':'left');
+      else setDirection(dy>0? 'down':'up');
+    } else {
+      togglePause();
+    }
+    touchStart = null;
+  }, {passive:true});
+
+  function togglePause(){
+    if(!running){ newGame(); return; }
+    paused = !paused;
+    showOverlay(paused? 'Paused — Tap to Resume' : '');
+    if(!paused) hideOverlay();
+  }
+  overlay.addEventListener('click', ()=>{ if(!running) newGame(); else togglePause(); });
+  startBtn.addEventListener('click', (e)=>{ e.stopPropagation(); if(!running) newGame(); });
+
+  // Prevent page scroll on space/arrow on desktop while focused
+  window.addEventListener('keydown', e=>{
+    if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)){
+      e.preventDefault();
+    }
+  }, {passive:false});
+
+  // bootstrap
+  resize();
+  // draw initial frame (shows grid & overlay)
+  draw();
+})();
+</script>
+</body>
+</html>
