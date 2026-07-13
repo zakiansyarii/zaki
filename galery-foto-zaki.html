@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galery Foto Zaki</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <nav class="fixed top-0 left-0 w-full z-50 bg-black bg-opacity-70 backdrop-blur-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-white">
+                <span class="text-yellow-500">ZAKI ANSYARI</span>
+            </div>
+            <div class="hidden md:flex space-x-8" id="navbar-links">
+                <a href="index.html" class="nav-link text-white hover:text-yellow-500 transition">Home</a>
+                <a href="galery-foto-zaki.html" class="nav-link text-white hover:text-yellow-500 transition">Gallery</a>
+                <a href="index.html#skills" class="nav-link text-white hover:text-yellow-500 transition">Songs</a>
+                <a href="index.html#contact" class="nav-link text-white hover:text-yellow-500 transition">Contact</a>
+            </div>
+            <button onclick="document.getElementById('mobile-nav').classList.toggle('show')" id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-nav" class="md:hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center space-y-8 hidden">
+            <a href="index.html" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Home</a>
+            <a href="galery-foto-zaki.html" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Gallery</a>
+            <a href="index.html#skills" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Songs</a>
+            <a href="index.html#contact" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Contact</a>
+        </div>
+    </nav>
+
+    <main class="pt-28 pb-20 bg-gradient-to-br from-gray-900 to-black min-h-screen">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl font-bold text-center mb-8 text-yellow-500">Galery Foto Zaki</h1>
+
+            <p class="text-center text-gray-300 mb-8">selamat datang di galery zaki</p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <!-- 40 images -->
+                
+                <!-- Generate static entries -->
+                <script>
+                    // This script will insert 40 image elements to keep the HTML small
+                    const grid = [];
+                    for(let i=1;i<=40;i++){
+                        const src = `./img/${i}.jpeg`;
+                        grid.push(`<div class="gallery-item"><img src="${src}" alt="Foto ${i}" loading="lazy"></div>`);
+                    }
+                    document.write(grid.join(''));
+                </script>
+            </div>
+
+            <div class="flex justify-center mt-8">
+                <a href="index.html" class="px-6 py-3 bg-yellow-500 text-black font-bold rounded-full shadow-lg hover:bg-yellow-400 transition">Kembali ke Beranda</a>
+            </div>
+        </div>
+
+        <!-- Lightbox -->
+        <div id="lightbox" class="lightbox">
+            <span class="close-lightbox">&times;</span>
+            <div class="lightbox-content">
+                <img id="lightbox-image" src="" alt="">
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-black py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">© 2025 zaki ansyari.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Lightbox handling
+        document.addEventListener('click', function(e){
+            if(e.target.matches('.gallery-item img')){
+                const src = e.target.getAttribute('src');
+                document.getElementById('lightbox-image').src = src;
+                document.getElementById('lightbox').style.display = 'flex';
+            }
+        });
+        document.querySelectorAll('.close-lightbox').forEach(el=>el.addEventListener('click', ()=>{
+            document.getElementById('lightbox').style.display = 'none';
+        }));
+        document.getElementById('lightbox').addEventListener('click', function(e){
+            if(e.target.id === 'lightbox') this.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

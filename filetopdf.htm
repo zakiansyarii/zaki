@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konverter File ke PDF - ZAKI ANSYARI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <nav class="fixed top-0 left-0 w-full z-50 bg-black bg-opacity-70 backdrop-blur-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-white">
+                <span class="text-yellow-500">ZAKI ANSYARI</span>
+            </div>
+            <div class="hidden md:flex space-x-8" id="navbar-links">
+                <a href="index.html" class="nav-link text-white hover:text-yellow-500 transition">Home</a>
+                <a href="galery-foto-zaki.html" class="nav-link text-white hover:text-yellow-500 transition">Gallery</a>
+                <a href="index.html#skills" class="nav-link text-white hover:text-yellow-500 transition">Songs</a>
+                <a href="index.html#contact" class="nav-link text-white hover:text-yellow-500 transition">Contact</a>
+            </div>
+            <button onclick="document.getElementById('mobile-nav').classList.toggle('show')" id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-nav" class="md:hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center space-y-8 hidden">
+            <a href="index.html" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Home</a>
+            <a href="galery-foto-zaki.html" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Gallery</a>
+            <a href="index.html#skills" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Songs</a>
+            <a href="index.html#contact" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Contact</a>
+        </div>
+    </nav>
+
+    <main class="pt-28 pb-20 bg-gradient-to-br from-gray-900 to-black min-h-screen">
+        <div class="container mx-auto px-6">
+            <div class="max-w-xl mx-auto bg-gray-900 bg-opacity-70 rounded-2xl shadow-xl p-8">
+                <h1 class="text-2xl font-bold text-yellow-500 mb-2 text-center">Konverter Gambar ke PDF</h1>
+                <p class="text-gray-300 text-sm mb-6 text-center">Pilih atau jatuhkan gambar (PNG/JPG) untuk diubah menjadi file PDF secara instan.</p>
+
+                <div class="border-2 border-dashed border-gray-700 rounded-xl p-6 bg-transparent hover:bg-gray-800 transition cursor-pointer relative group">
+                    <input type="file" id="fileInput" accept="*/*" multiple class="absolute inset-0 opacity-0 cursor-pointer">
+                    <div class="space-y-2 text-center">
+                        <svg class="mx-auto h-12 w-12 text-yellow-500 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        <p class="text-sm font-medium text-gray-300">Klik atau seret file ke sini</p>
+                        <p class="text-xs text-gray-400">Mendukung JPG, JPEG, PNG</p>
+                    </div>
+                </div>
+
+                <div id="fileInfo" class="mt-4 text-sm text-gray-300 hidden text-center">
+                    <span id="fileCount" class="font-semibold text-yellow-500">0</span> file terpilih.
+                </div>
+
+                <button id="convertBtn" class="mt-6 w-full bg-yellow-500 hover:bg-yellow-400 text-black font-semibold py-3 px-4 rounded-xl shadow-md transition disabled:bg-gray-500 disabled:cursor-not-allowed" disabled>
+                    Konversi ke PDF
+                </button>
+            </div>
+
+            <div class="flex justify-center mt-6">
+                <a href="index.html" class="px-6 py-3 bg-yellow-500 text-black font-bold rounded-full shadow-lg hover:bg-yellow-400 transition">Kembali</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-black py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">© 2025 zaki ansyari.</p>
+        </div>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileCount = document.getElementById('fileCount');
+        const convertBtn = document.getElementById('convertBtn');
+
+        let selectedFiles = [];
+
+        fileInput.addEventListener('change', (e) => {
+            selectedFiles = Array.from(e.target.files);
+            if (selectedFiles.length > 0) {
+                fileCount.textContent = selectedFiles.length;
+                fileInfo.classList.remove('hidden');
+                convertBtn.disabled = false;
+            } else {
+                fileInfo.classList.add('hidden');
+                convertBtn.disabled = true;
+            }
+        });
+
+        convertBtn.addEventListener('click', async () => {
+            if (selectedFiles.length === 0) return;
+            convertBtn.innerText = "Memproses...";
+            convertBtn.disabled = true;
+
+            // If all files are PDFs, merge them using pdf-lib
+            const allPDF = selectedFiles.every(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+            if (allPDF) {
+                try {
+                    const mergedPdf = await PDFLib.PDFDocument.create();
+                    for (const file of selectedFiles) {
+                        const arr = await file.arrayBuffer();
+                        const donor = await PDFLib.PDFDocument.load(arr);
+                        const copied = await mergedPdf.copyPages(donor, donor.getPageIndices());
+                        copied.forEach(p => mergedPdf.addPage(p));
+                    }
+                    const mergedBytes = await mergedPdf.save();
+                    const blob = new Blob([mergedBytes], { type: 'application/pdf' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'merged.pdf';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                } catch (err) {
+                    alert('Gagal menggabungkan PDF: ' + err.message);
+                    console.error(err);
+                } finally {
+                    convertBtn.innerText = "Konversi ke PDF";
+                    convertBtn.disabled = false;
+                }
+                return;
+            }
+
+            // Otherwise convert supported types to PDF pages via jsPDF
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+
+                let firstAdded = false;
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    const file = selectedFiles[i];
+                    const name = file.name.toLowerCase();
+
+                    if (file.type.startsWith('image/') || name.match(/\.(jpe?g|png|gif|webp)$/)) {
+                        const imageData = await readFileAsDataURL(file);
+                        const img = new Image();
+                        img.src = imageData;
+                        await img.decode();
+                        const ratio = Math.min((pageWidth - 40) / img.width, (pageHeight - 40) / img.height);
+                        const w = img.width * ratio;
+                        const h = img.height * ratio;
+                        if (firstAdded) doc.addPage();
+                        doc.addImage(imageData, 'JPEG', (pageWidth - w) / 2, 20, w, h);
+                        firstAdded = true;
+                    } else if (file.type.startsWith('text/') || name.match(/\.(txt|md|csv)$/)) {
+                        const text = await file.text();
+                        if (firstAdded) doc.addPage();
+                        addLongTextToPdf(doc, text, pageWidth - 80, 40);
+                        firstAdded = true;
+                    } else if (file.type === 'text/html' || name.endsWith('.html') || name.endsWith('.htm')) {
+                        const html = await file.text();
+                        const container = document.createElement('div');
+                        container.style.padding = '20px';
+                        container.style.background = 'white';
+                        container.innerHTML = html;
+                        document.body.appendChild(container);
+                        const canvas = await html2canvas(container, { scale: 2 });
+                        document.body.removeChild(container);
+                        const imgData = canvas.toDataURL('image/jpeg', 0.9);
+                        if (firstAdded) doc.addPage();
+                        const img = new Image(); img.src = imgData; await img.decode();
+                        const ratio = Math.min((pageWidth - 40) / img.width, (pageHeight - 40) / img.height);
+                        const w = img.width * ratio; const h = img.height * ratio;
+                        doc.addImage(imgData, 'JPEG', (pageWidth - w) / 2, 20, w, h);
+                        firstAdded = true;
+                    } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || name.endsWith('.docx')) {
+                        const arrayBuffer = await file.arrayBuffer();
+                        const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+                        const html = result.value;
+                        const container = document.createElement('div');
+                        container.style.padding = '20px';
+                        container.style.background = 'white';
+                        container.innerHTML = html;
+                        container.style.maxWidth = (pageWidth - 40) + 'px';
+                        document.body.appendChild(container);
+                        const canvas = await html2canvas(container, { scale: 2 });
+                        document.body.removeChild(container);
+                        const imgData = canvas.toDataURL('image/jpeg', 0.9);
+                        if (firstAdded) doc.addPage();
+                        const img = new Image(); img.src = imgData; await img.decode();
+                        const ratio = Math.min((pageWidth - 40) / img.width, (pageHeight - 40) / img.height);
+                        const w = img.width * ratio; const h = img.height * ratio;
+                        doc.addImage(imgData, 'JPEG', (pageWidth - w) / 2, 20, w, h);
+                        firstAdded = true;
+                    } else {
+                        // Unsupported binary: try to read as text fallback
+                        try {
+                            const text = await file.text();
+                            if (firstAdded) doc.addPage();
+                            addLongTextToPdf(doc, `File: ${file.name}\n\n` + text, pageWidth - 80, 40);
+                            firstAdded = true;
+                        } catch (err) {
+                            alert('Tipe file ' + file.name + ' tidak didukung untuk konversi di browser.');
+                        }
+                    }
+                }
+
+                // If nothing was added (all unsupported), notify
+                if (!firstAdded) {
+                    alert('Tidak ada file yang bisa dikonversi. Coba unggah gambar, teks, HTML, atau DOCX.');
+                } else {
+                    doc.save('hasil-konversi.pdf');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Terjadi kesalahan saat mengonversi: ' + err.message);
+            } finally {
+                convertBtn.innerText = "Konversi ke PDF";
+                convertBtn.disabled = false;
+            }
+        });
+
+        function addLongTextToPdf(doc, text, maxWidth, marginTop){
+            const lines = doc.splitTextToSize(text, maxWidth);
+            const lineHeight = 12;
+            let cursorY = marginTop;
+            for (let i = 0; i < lines.length; i++){
+                if (cursorY + lineHeight > doc.internal.pageSize.getHeight() - 40){
+                    doc.addPage();
+                    cursorY = 40;
+                }
+                doc.text(lines[i], 40, cursorY);
+                cursorY += lineHeight;
+            }
+        }
+
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Kalender & Agenda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        .hari-aktif { border: 2px solid #2563eb; background-color: #eff6ff; }
+        .hari-ada-agenda::after { content: ''; display: block; width: 6px; height: 6px; background-color: #ef4444; border-radius: 50%; margin: 2px auto 0; }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed top-0 left-0 w-full z-50 bg-black bg-opacity-70 backdrop-blur-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-white">
+                <span class="text-yellow-500">ZAKI ANSYARI</span>
+            </div>
+            <div class="hidden md:flex space-x-8" id="navbar-links">
+                <a href="index.html" class="nav-link text-white hover:text-yellow-500 transition">Home</a>
+                <a href="galery-foto-zaki.html" class="nav-link text-white hover:text-yellow-500 transition">Gallery</a>
+                <a href="index.html#skills" class="nav-link text-white hover:text-yellow-500 transition">Songs</a>
+                <a href="index.html#contact" class="nav-link text-white hover:text-yellow-500 transition">Contact</a>
+            </div>
+            <button onclick="document.getElementById('mobile-nav').classList.toggle('show')" id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-nav" class="md:hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center space-y-8 hidden">
+            <a href="index.html" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Home</a>
+            <a href="galery-foto-zaki.html" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Gallery</a>
+            <a href="index.html#skills" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Songs</a>
+            <a href="index.html#contact" class="nav-link text-white text-2xl" onclick="document.getElementById('mobile-nav').classList.add('hidden')">Contact</a>
+        </div>
+    </nav>
+
+    <main class="pt-28 pb-20 bg-gradient-to-br from-gray-900 to-black min-h-screen">
+        <div class="container mx-auto px-6">
+            <div class="max-w-5xl mx-auto space-y-6">
+        <div class="text-center md:text-left">
+            <h1 class="text-3xl font-bold text-yellow-500">Kalender & Agenda Kerja</h1>
+            <p class="text-gray-500">agenda pekerjaan tugas</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm lg:col-span-2">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="bulanTahun" class="text-xl font-bold text-gray-800">Januari 2026</h2>
+                    <div class="flex space-x-2">
+                        <button id="prevBulan" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition text-sm font-semibold">&larr;</button>
+                        <button id="nextBulan" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition text-sm font-semibold">&rarr;</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-7 gap-2 text-center font-semibold text-gray-500 text-xs uppercase mb-2">
+                    <div>Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div>
+                </div>
+
+                <div id="gridKalender" class="grid grid-cols-7 gap-2 text-center text-sm font-medium text-gray-700">
+                    </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm space-y-6">
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">Agenda Tanggal:</h2>
+                    <p id="tanggalTerpilihDisplay" class="text-yellow-500 font-semibold text-sm">Pilih tanggal di kalender</p>
+                </div>
+
+                    <div class="flex justify-end mb-4">
+                        <a href="index.html" class="px-4 py-2 bg-yellow-500 text-black font-semibold rounded-full hover:bg-yellow-400 transition text-sm">Kembali</a>
+                    </div>
+
+                <form id="agendaForm" class="space-y-3">
+                    <input type="text" id="inputAgenda" placeholder="Contoh: Rapat OSIS / Serah terima barang" required disabled
+                        class="w-full px-3 py-2 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm disabled:bg-gray-800 disabled:text-gray-300 disabled:cursor-not-allowed">
+                    <button type="submit" id="btnTambah" disabled
+                        class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-medium py-2 rounded-xl transition text-sm disabled:bg-gray-700 disabled:cursor-not-allowed">
+                        Tambah Agenda
+                    </button>
+                </form>
+
+                <div>
+                    <h3 class="text-sm font-bold text-gray-600 mb-3 uppercase tracking-wider">Daftar Kegiatan</h3>
+                    <ul id="listAgenda" class="space-y-2 max-h-60 overflow-y-auto">
+                        </ul>
+                    <div id="agendaEmptyState" class="text-center py-4 text-xs text-gray-400">
+                        Pilih tanggal untuk melihat atau menambah agenda.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array nama-nama bulan Bahasa Indonesia
+        const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        
+        let dateObj = new Date();
+        let bulanAktif = dateObj.getMonth();
+        let tahunAktif = dateObj.getFullYear();
+        let tanggalTerpilih = null; // format: "YYYY-MM-DD"
+
+        // Struktur data di LocalStorage: { "2026-07-13": ["Agenda 1", "Agenda 2"] }
+        let databaseAgenda = JSON.parse(localStorage.getItem('my_calendar_agendas')) || {};
+
+        // DOM Elements
+        const bulanTahunEl = document.getElementById('bulanTahun');
+        const gridKalender = document.getElementById('gridKalender');
+        const prevBulanBtn = document.getElementById('prevBulan');
+        const nextBulanBtn = document.getElementById('nextBulan');
+        
+        const tanggalTerpilihDisplay = document.getElementById('tanggalTerpilihDisplay');
+        const agendaForm = document.getElementById('agendaForm');
+        const inputAgenda = document.getElementById('inputAgenda');
+        const btnTambah = document.getElementById('btnTambah');
+        const listAgenda = document.getElementById('listAgenda');
+        const agendaEmptyState = document.getElementById('agendaEmptyState');
+
+        // Fungsi me-render angka kalender bulanan
+        function renderKalender() {
+            gridKalender.innerHTML = '';
+            bulanTahunEl.textContent = `${namaBulan[bulanAktif]} ${tahunAktif}`;
+
+            // Mencari hari pertama di bulan tersebut jatuh di hari apa (0 = Minggu, 1 = Senin, dst)
+            const hariPertama = new Date(tahunAktif, bulanAktif, 1).getDay();
+            // Mencari total jumlah hari di bulan tersebut
+            const totalHari = new Date(tahunAktif, bulanAktif + 1, 0).getDate();
+
+            // 1. Render kotak kosong untuk menyelaraskan hari pertama
+            for (let i = 0; i < hariPertama; i++) {
+                const kotakKosong = document.createElement('div');
+                gridKalender.appendChild(kotakKosong);
+            }
+
+            // 2. Render tanggal
+            for (let tanggal = 1; tanggal <= totalHari; tanggal++) {
+                const kotakTanggal = document.createElement('div');
+                kotakTanggal.textContent = tanggal;
+                kotakTanggal.className = "py-3 rounded-xl hover:bg-gray-200 transition cursor-pointer font-medium border border-transparent";
+                
+                // Format string tanggal unik untuk dicocokkan dengan database
+                const formatBulan = String(bulanAktif + 1).padStart(2, '0');
+                const formatHari = String(tanggal).padStart(2, '0');
+                const idTanggalString = `${tahunAktif}-${formatBulan}-${formatHari}`;
+
+                // Tandai jika tanggal memiliki agenda
+                if (databaseAgenda[idTanggalString] && databaseAgenda[idTanggalString].length > 0) {
+                    kotakTanggal.classList.add('hari-ada-agenda');
+                }
+
+                // Tandai jika ini adalah tanggal yang sedang dipilih user
+                if (tanggalTerpilih === idTanggalString) {
+                    kotakTanggal.classList.add('hari-aktif');
+                }
+
+                // Event ketika tanggal di kalender diklik
+                kotakTanggal.addEventListener('click', () => {
+                    pilihTanggal(idTanggalString, tanggal);
+                });
+
+                gridKalender.appendChild(kotakTanggal);
+            }
+        }
+
+        // Fungsi eksekusi saat tanggal diklik
+        function pilihTanggal(stringTanggal, angkaTanggal) {
+            tanggalTerpilih = stringTanggal;
+            
+            // Perbarui tampilan teks info tanggal di bagian kanan
+            tanggalTerpilihDisplay.textContent = `${angkaTanggal} ${namaBulan[bulanAktif]} ${tahunAktif}`;
+            
+            // Aktifkan form input agenda
+            inputAgenda.disabled = false;
+            btnTambah.disabled = false;
+            
+            // Render ulang kalender untuk memperbarui border tanggal aktif
+            renderKalender();
+            // Tampilkan daftar agenda untuk tanggal ini
+            renderDaftarAgenda();
+        }
+
+        // Fungsi menampilkan isi kegiatan berdasarkan tanggal terpilih
+        function renderDaftarAgenda() {
+            listAgenda.innerHTML = '';
+            const listHariIni = databaseAgenda[tanggalTerpilih] || [];
+
+            if (listHariIni.length === 0) {
+                agendaEmptyState.classList.remove('hidden');
+                agendaEmptyState.textContent = "Tidak ada agenda kegiatan untuk hari ini.";
+            } else {
+                agendaEmptyState.classList.add('hidden');
+                listHariIni.forEach((agendaText, index) => {
+                    const li = document.createElement('li');
+                    li.className = "flex justify-between items-center bg-gray-50 px-3 py-2 rounded-xl text-sm border border-gray-100 group";
+                    li.innerHTML = `
+                        <span class="text-gray-700 font-medium">${agendaText}</span>
+                        <button onclick="hapusAgenda(${index})" class="text-gray-400 hover:text-red-500 transition opacity-0 group-hover:opacity-100 md:opacity-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    `;
+                    listAgenda.appendChild(li);
+                });
+            }
+        }
+
+        // Menangkap pengiriman form untuk tambah agenda baru
+        agendaForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!tanggalTerpilih) return;
+
+            // Jika belum ada array agenda di tanggal tersebut, buat baru
+            if (!databaseAgenda[tanggalTerpilih]) {
+                databaseAgenda[tanggalTerpilih] = [];
+            }
+
+            // Masukkan teks agenda ke database lokal
+            databaseAgenda[tanggalTerpilih].push(inputAgenda.value);
+            
+            // Simpan ke localStorage
+            localStorage.setItem('my_calendar_agendas', JSON.stringify(databaseAgenda));
+            
+            // Reset input form
+            inputAgenda.value = '';
+            
+            // Render ulang kalender dan daftarnya agar titik penanda merah muncul
+            renderKalender();
+            renderDaftarAgenda();
+        });
+
+        // Fungsi menghapus satu kegiatan agenda tertentu
+        window.hapusAgenda = function(index) {
+            if (!tanggalTerpilih) return;
+
+            databaseAgenda[tanggalTerpilih].splice(index, 1);
+
+            // Jika agenda di tanggal tersebut kosong, hapus key tanggalnya agar bersih
+            if (databaseAgenda[tanggalTerpilih].length === 0) {
+                delete databaseAgenda[tanggalTerpilih];
+            }
+
+            localStorage.setItem('my_calendar_agendas', JSON.stringify(databaseAgenda));
+            renderKalender();
+            renderDaftarAgenda();
+        }
+
+        // Navigasi Tombol Ganti Bulan
+        prevBulanBtn.addEventListener('click', () => {
+            bulanAktif--;
+            if (bulanAktif < 0) {
+                bulanAktif = 11;
+                tahunAktif--;
+            }
+            renderKalender();
+        });
+
+        nextBulanBtn.addEventListener('click', () => {
+            bulanAktif++;
+            if (bulanAktif > 11) {
+                bulanAktif = 0;
+                tahunAktif++;
+            }
+            renderKalender();
+        });
+
+        // Inisialisasi awal saat web dibuka
+        renderKalender();
+    </script>
+    </main>
+
+    <footer class="bg-black py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">© 2025 zaki ansyari.</p>
+        </div>
+    </footer>
+</body>
+</html>
