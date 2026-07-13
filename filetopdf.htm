@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konverter File ke PDF</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-6">
+
+    <div class="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full text-center">
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">Konverter Gambar ke PDF</h1>
+        <p class="text-gray-500 text-sm mb-6">Pilih atau jatuhkan gambar (PNG/JPG) untuk diubah menjadi file PDF secara instan.</p>
+
+        <div class="border-2 border-dashed border-blue-400 rounded-xl p-6 bg-blue-5/30 hover:bg-blue-5/50 transition cursor-pointer relative group">
+            <input type="file" id="fileInput" accept="image/*" multiple class="absolute inset-0 opacity-0 cursor-pointer">
+            <div class="space-y-2">
+                <svg class="mx-auto h-12 w-12 text-blue-500 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <p class="text-sm font-medium text-gray-700">Klik atau seret file ke sini</p>
+                <p class="text-xs text-gray-400">Mendukung JPG, JPEG, PNG</p>
+            </div>
+        </div>
+
+        <div id="fileInfo" class="mt-4 text-sm text-gray-600 hidden">
+            <span id="fileCount" class="font-semibold text-blue-600">0</span> file terpilih.
+        </div>
+
+        <button id="convertBtn" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition disabled:bg-gray-300 disabled:cursor-not-allowed" disabled>
+            Konversi ke PDF
+        </button>
+    </div>
+
+    <footer class="mt-8 text-xs text-gray-400">
+        by to zaki ansyari
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileCount = document.getElementById('fileCount');
+        const convertBtn = document.getElementById('convertBtn');
+
+        let selectedFiles = [];
+
+        // Mendeteksi ketika user memilih file
+        fileInput.addEventListener('change', (e) => {
+            selectedFiles = Array.from(e.target.files);
+            
+            if (selectedFiles.length > 0) {
+                fileCount.textContent = selectedFiles.length;
+                fileInfo.classList.remove('hidden');
+                convertBtn.disabled = false;
+            } else {
+                fileInfo.classList.add('hidden');
+                convertBtn.disabled = true;
+            }
+        });
+
+        // Proses Konversi ke PDF
+        convertBtn.addEventListener('click', async () => {
+            if (selectedFiles.length === 0) return;
+
+            // Inisialisasi jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            convertBtn.innerText = "Memproses...";
+            convertBtn.disabled = true;
+
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                
+                // Lewati jika bukan gambar
+                if (!file.type.startsWith('image/')) continue;
+
+                // Tambahkan halaman baru jika ini bukan file pertama
+                if (i > 0) {
+                    doc.addPage();
+                }
+
+                try {
+                    const imageData = await readFileAsDataURL(file);
+                    
+                    // Mengatur ukuran gambar agar pas di halaman PDF (A4 standar)
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const pageHeight = doc.internal.pageSize.getHeight();
+                    
+                    // Memasukkan gambar ke PDF
+                    doc.addImage(imageData, 'JPEG', 10, 10, pageWidth - 20, pageHeight - 20);
+                } catch (error) {
+                    console.error("Gagal membaca file: ", error);
+                }
+            }
+
+            // Simpan file PDF ke komputer pengguna
+            doc.save('hasil-konversi.pdf');
+
+            // Reset Tombol
+            convertBtn.innerText = "Konversi ke PDF";
+            convertBtn.disabled = false;
+        });
+
+        // Helper function untuk membaca file sebagai DataURL (Base64)
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
+</body>
+</html>
